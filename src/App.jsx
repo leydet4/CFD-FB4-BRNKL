@@ -1,34 +1,26 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import TripDashboard from "./components/TripDashboard";
 
 export default function App() {
-  const [files, setFiles] = useState([]);
+  const [tripData, setTripData] = useState([]);
 
   useEffect(() => {
-    fetchFiles();
+    // Load CSV dynamically
+    fetch("/path-to-your-csv-file.csv")
+      .then((response) => response.text())
+      .then((csvText) => {
+        const rows = csvText.split("\n").slice(1);
+        const formattedData = rows.map((row) => {
+          const [timestamp, latitude, longitude] = row.split(",");
+          return { timestamp: parseInt(timestamp), latitude: parseFloat(latitude), longitude: parseFloat(longitude) };
+        });
+        setTripData(formattedData);
+      });
   }, []);
 
-  const fetchFiles = async () => {
-    // Replace with actual file fetching logic
-    const filesFromCloud = [
-      { name: "TripData.csv", url: "https://your-storage-link/TripData.csv" },
-      { name: "TripVideo.mp4", url: "https://your-storage-link/TripVideo.mp4" }
-    ];
-    setFiles(filesFromCloud);
-  };
-
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">CFD-FB4-BRNKL File Manager</h1>
-      <h2 className="text-xl font-bold mt-6">Uploaded Files</h2>
-      <ul>
-        {files.map((file, index) => (
-          <li key={index}>
-            <a href={file.url} target="_blank" rel="noopener noreferrer">
-              {file.name}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <div>
+      <TripDashboard videoSrc="/path-to-your-video.mp4" tripData={tripData} />
     </div>
   );
 }
