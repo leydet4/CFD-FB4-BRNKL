@@ -5,7 +5,7 @@ export default function App() {
   const [tripData, setTripData] = useState([]);
 
   useEffect(() => {
-    // Load CSV dynamically
+    // Load CSV dynamically (replace with actual fetch path)
     fetch("/path-to-your-csv-file.csv")
       .then((response) => response.text())
       .then((csvText) => {

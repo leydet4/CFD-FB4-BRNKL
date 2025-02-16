@@ -5,7 +5,6 @@ import "leaflet/dist/leaflet.css";
 export default function TripDashboard({ videoSrc, tripData }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const videoRef = useRef(null);
-  const mapRef = useRef(null);
 
   // Extract coordinates for the route
   const routeCoordinates = tripData.map((point) => [point.latitude, point.longitude]);
@@ -40,11 +39,8 @@ export default function TripDashboard({ videoSrc, tripData }) {
         center={routeCoordinates[0]} 
         zoom={12} 
         style={{ height: "400px", width: "100%" }}
-        ref={mapRef}
       >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Polyline positions={routeCoordinates} color="blue" />
         <Marker position={routeCoordinates[currentIndex]} />
       </MapContainer>
