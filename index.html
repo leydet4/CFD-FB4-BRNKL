@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CFD-FB4-BRNKL</title>
-  <script src="https://apis.google.com/js/api.js" async defer></script>
-</head>
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
-</body>
-</html>
+<script src="https://apis.google.com/js/api.js" async defer onload="initGapi()"></script>
+<script>
+  function initGapi() {
+    gapi.load('client:auth2', function () {
+      gapi.client.init({
+        apiKey: "YOUR_API_KEY",
+        clientId: "YOUR_CLIENT_ID",
+        discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
+        scope: "https://www.googleapis.com/auth/drive.file",
+      }).then(() => {
+        console.log("Google API initialized.");
+      }).catch(error => console.error("Error initializing Google API:", error));
+    });
+  }
+</script>
