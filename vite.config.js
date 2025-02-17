@@ -3,14 +3,14 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  root: ".", // Ensures Vite starts from the correct directory
-  publicDir: "public", // Ensures public assets like index.html are found
+  root: ".", // Root directory
+  publicDir: "public", // Ensure Vite finds `index.html`
   build: {
-    outDir: "dist", // Ensures built files go to the correct folder
-    emptyOutDir: true, // Clears old files before building
+    outDir: "dist", // Build output goes into `dist/`
+    emptyOutDir: true, // Clears old build files before creating new ones
   },
   server: {
     port: 5173, // Default Vite port
-    open: true, // Opens the app in the browser automatically
+    open: true, // Opens the app automatically
   },
 });
