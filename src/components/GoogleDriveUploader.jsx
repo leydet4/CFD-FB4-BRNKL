@@ -1,33 +1,20 @@
 import React, { useEffect, useState } from "react";
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
+
+const CLIENT_ID = "389164732560-sl13gsa3dhvkaqkrkp178t1pe10346nr.apps.googleusercontent.com"; // Replace with your actual Client ID
 
 export default function GoogleDriveUploader() {
-  const CLIENT_ID = "389164732560-sl13gsa3dhvkaqkrkp178t1pe10346nr.apps.googleusercontent.com";
-  const API_KEY = "AIzaSyBt9wvoThTjQojZOw5csu5o9n2DUlqwF1o";
-  const SCOPES = "const SCOPES = "https://www.googleapis.com/auth/drive";
-";
   const [accessToken, setAccessToken] = useState(null);
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-    
-    script.onload = () => {
-      google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
-        scope: SCOPES,
-        callback: (response) => {
-          setAccessToken(response.access_token);
-        }
-      });
-    };
-  }, []);
-
-  function handleAuthClick() {
-    google.accounts.oauth2.requestAccessToken();
-  }
+  const login = useGoogleLogin({
+    onSuccess: (response) => {
+      setAccessToken(response.access_token);
+      console.log("Logged in, Access Token:", response.access_token);
+    },
+    onError: (error) => console.error("Login Failed", error),
+    scope: "https://www.googleapis.com/auth/drive.file",
+    flow: "implicit",
+  });
 
   function handleFileUpload(event) {
     if (!accessToken) {
@@ -63,10 +50,12 @@ export default function GoogleDriveUploader() {
   }
 
   return (
-    <div>
-      <h2>Google Drive Uploader</h2>
-      <button onClick={handleAuthClick}>Sign in with Google</button>
-      <input type="file" onChange={handleFileUpload} disabled={!accessToken} />
-    </div>
+    <GoogleOAuthProvider clientId={CLIENT_ID}>
+      <div>
+        <h2>Google Drive Uploader</h2>
+        <button onClick={() => login()}>Sign in with Google</button>
+        <input type="file" onChange={handleFileUpload} disabled={!accessToken} />
+      </div>
+    </GoogleOAuthProvider>
   );
 }
