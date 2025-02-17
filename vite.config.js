@@ -3,15 +3,11 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  root: ".", // Ensure Vite knows the root folder
-  publicDir: "public", // Ensure Vite knows where index.html is
+  base: "./", // Ensures correct asset paths
   build: {
     outDir: "dist",
     rollupOptions: {
-      input: "public/index.html", // Ensure correct entry point
+      input: "public/index.html", // Ensures correct entry point
     },
-  },
-  server: {
-    port: 3000, // Optional: Run dev server on port 3000
   },
 });
