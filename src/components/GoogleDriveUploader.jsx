@@ -1,32 +1,27 @@
 import React, { useEffect, useState } from "react";
 
 export default function GoogleDriveUploader() {
-  const CLIENT_ID = "389164732560-sl13gsa3dhvkaqkrkp178t1pe10346nr.apps.googleusercontent.com"; // Replace with your actual Client ID
-  const API_KEY = "AIzaSyBt9wvoThTjQojZOw5csu5o9n2DUlqwF1o"; // Replace with your actual API Key
+  const CLIENT_ID = "YOUR_CLIENT_ID";
+  const API_KEY = "YOUR_API_KEY";
   const SCOPES = "https://www.googleapis.com/auth/drive.file";
-
   const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
-    function loadGisApi() {
-      const script = document.createElement("script");
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-      
-      script.onload = () => {
-        google.accounts.oauth2.initTokenClient({
-          client_id: CLIENT_ID,
-          scope: SCOPES,
-          callback: (response) => {
-            setAccessToken(response.access_token);
-          }
-        });
-      };
-    }
-
-    loadGisApi();
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+    
+    script.onload = () => {
+      google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        callback: (response) => {
+          setAccessToken(response.access_token);
+        }
+      });
+    };
   }, []);
 
   function handleAuthClick() {
