@@ -3,23 +3,21 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  root: ".", // Ensure Vite finds index.html
+  publicDir: "public", // Explicitly set the public directory
   build: {
-    outDir: "dist", // ✅ Cloudflare Pages serves from this directory
-    emptyOutDir: true, // Clears old builds before a new build
+    outDir: "dist", // Cloudflare Pages will serve from this directory
+    emptyOutDir: true,
     rollupOptions: {
-      input: "index.html", // ✅ Ensures index.html is included in the build
+      input: "public/index.html", // Ensure Vite includes index.html
     },
-  },
-  server: {
-    open: true, // Opens in browser on local dev
-    port: 3000, // Port for local dev
   },
   resolve: {
     alias: {
-      "@": "/src", // ✅ Allows imports like "@/components/TripDashboard"
+      "@": "/src",
     },
   },
   define: {
-    "process.env": {}, // ✅ Prevents errors from missing env variables
+    "process.env": {}, // Prevent missing env variable errors
   },
 });
