@@ -1,37 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function GoogleDriveUploader() {
-  const CLIENT_ID = "389164732560-sl13gsa3dhvkaqkrkp178t1pe10346nr.apps.googleusercontent.com";
-  const API_KEY = "AIzaSyBt9wvoThTjQojZOw5csu5o9n2DUlqwF1o"; // Get from Google Cloud
-  const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+  const CLIENT_ID = "389164732560-sl13gsa3dhvkaqkrkp178t1pe10346nr.apps.googleusercontent.com"; // Replace with your actual Client ID
+  const API_KEY = "AIzaSyBt9wvoThTjQojZOw5csu5o9n2DUlqwF1o"; // Replace with your actual API Key
   const SCOPES = "https://www.googleapis.com/auth/drive.file";
 
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [accessToken, setAccessToken] = useState(null);
+
+  useEffect(() => {
+    function loadGisApi() {
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+      
+      script.onload = () => {
+        google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,
+          callback: (response) => {
+            setAccessToken(response.access_token);
+          }
+        });
+      };
+    }
+
+    loadGisApi();
+  }, []);
 
   function handleAuthClick() {
-    window.gapi.auth2.getAuthInstance().signIn();
-  }
-
-  function handleSignOutClick() {
-    window.gapi.auth2.getAuthInstance().signOut();
-  }
-
-  function initClient() {
-    window.gapi.client
-      .init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES,
-      })
-      .then(() => {
-        const authInstance = window.gapi.auth2.getAuthInstance();
-        setIsSignedIn(authInstance.isSignedIn.get());
-        authInstance.isSignedIn.listen(setIsSignedIn);
-      });
+    google.accounts.oauth2.requestAccessToken();
   }
 
   function handleFileUpload(event) {
+    if (!accessToken) {
+      alert("Please sign in first.");
+      return;
+    }
+
     const file = event.target.files[0];
     if (!file) return;
 
@@ -46,7 +53,9 @@ export default function GoogleDriveUploader() {
 
     fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
       method: "POST",
-      headers: new Headers({ Authorization: `Bearer ${window.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token}` }),
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
       body: form,
     })
       .then((res) => res.json())
@@ -60,14 +69,8 @@ export default function GoogleDriveUploader() {
   return (
     <div>
       <h2>Google Drive Uploader</h2>
-      {!isSignedIn ? (
-        <button onClick={handleAuthClick}>Sign in with Google</button>
-      ) : (
-        <>
-          <button onClick={handleSignOutClick}>Sign Out</button>
-          <input type="file" onChange={handleFileUpload} />
-        </>
-      )}
+      <button onClick={handleAuthClick}>Sign in with Google</button>
+      <input type="file" onChange={handleFileUpload} disabled={!accessToken} />
     </div>
   );
 }
