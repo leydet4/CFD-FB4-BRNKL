@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 export default function GoogleDriveUploader() {
-  const CLIENT_ID = "YOUR_CLIENT_ID";
-  const API_KEY = "YOUR_API_KEY";
+  const CLIENT_ID = "389164732560-sl13gsa3dhvkaqkrkp178t1pe10346nr.apps.googleusercontent.com";
+  const API_KEY = "AIzaSyBt9wvoThTjQojZOw5csu5o9n2DUlqwF1o";
   const SCOPES = "https://www.googleapis.com/auth/drive.file";
   const [accessToken, setAccessToken] = useState(null);
 
