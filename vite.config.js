@@ -10,7 +10,7 @@ export default defineConfig({
     emptyOutDir: true, // Clears old files before building
   },
   server: {
-    port: 5173, // Default Vite port (can be changed)
+    port: 5173, // Default Vite port
     open: true, // Opens the app in the browser automatically
   },
 });
