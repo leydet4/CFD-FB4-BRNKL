@@ -1,3 +1,5 @@
+// Full script.js for CFD-FB4-BRNKL Web App
+
 document.addEventListener("DOMContentLoaded", () => {
     let map = L.map("map").setView([37.7749, -122.4194], 10);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -28,3 +30,15 @@ function plotTrack(data) {
     let polyline = L.polyline(coordinates, { color: "blue" }).addTo(map);
     if (coordinates.length) map.setView(coordinates[0], 12);
 }
+
+function syncVideo(timestamp) {
+    let videoName = `video_${timestamp}.mp4`;
+    let workerURL = "https://fancy-frog-1682.cfdmarineteam.workers.dev/get-file/";
+    document.getElementById("videoPlayer").src = workerURL + videoName;
+}
+
+document.getElementById("timestampSlider").addEventListener("input", (e) => {
+    let index = parseInt(e.target.value);
+    let timestamp = csvData[index]?.timestamp;
+    syncVideo(timestamp);
+});
