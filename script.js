@@ -39,11 +39,20 @@ function forceMapResize() {
 async function uploadFiles() {
     let csvFile = document.getElementById("csvUpload").files[0];
     let videoFile = document.getElementById("videoUpload").files[0];
-    if (!csvFile || !videoFile) return alert("Please upload both CSV and MP4 files");
+    
+    if (!csvFile && !videoFile) {
+        return alert("Please upload at least one file (CSV or MP4)");
+    }
 
-    let csvText = await csvFile.text();
-    processCSV(csvText);
-
+    if (csvFile) {
+        let csvText = await csvFile.text();
+        processCSV(csvText);
+    }
+    
+    if (videoFile) {
+        syncVideo(videoFile.name);
+    }
+    
     // Force map to update size after file uploads
     forceMapResize();
 }
@@ -94,8 +103,7 @@ function syncVideoAndMap(index) {
     if (!data) return;
 
     let videoName = `video_${data.timestamp}.mp4`;
-    let workerURL = "https://fancy-frog-1682.cfdmarineteam.workers.dev/get-file/";
-    document.getElementById("videoPlayer").src = workerURL + videoName;
+    syncVideo(videoName);
     
     if (window.marker) {
         window.map.removeLayer(window.marker);
@@ -103,6 +111,11 @@ function syncVideoAndMap(index) {
     
     window.marker = L.marker([data.lat, data.lon]).addTo(window.map);
     window.map.setView([data.lat, data.lon], 14);
+}
+
+function syncVideo(videoName) {
+    let workerURL = "https://fancy-frog-1682.cfdmarineteam.workers.dev/get-file/";
+    document.getElementById("videoPlayer").src = workerURL + videoName;
 }
 
 // Sync video playback with map movement
