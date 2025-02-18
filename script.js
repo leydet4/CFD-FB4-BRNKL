@@ -1,9 +1,9 @@
-// Updated script.js to process GNSS CSV file
+// Fixed script.js to handle Leaflet polyline error
 document.addEventListener("DOMContentLoaded", () => {
-    let map = L.map("map").setView([36.721838, -76.242718], 14);
+    window.map = L.map("map").setView([36.721838, -76.242718], 14);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors"
-    }).addTo(map);
+    }).addTo(window.map);
 });
 
 async function uploadFiles() {
@@ -33,9 +33,17 @@ function processCSV(csvText) {
 }
 
 function plotTrack(data) {
+    if (!window.map) {
+        console.error("Map is not initialized.");
+        return;
+    }
+    
     let coordinates = data.map(d => [d.lat, d.lon]);
-    let polyline = L.polyline(coordinates, { color: "blue" }).addTo(map);
-    if (coordinates.length) map.setView(coordinates[0], 14);
+    if (coordinates.length > 0) {
+        let polyline = L.polyline(coordinates, { color: "blue" });
+        polyline.addTo(window.map);
+        window.map.setView(coordinates[0], 14);
+    }
 }
 
 function setupTimestampSlider(data) {
