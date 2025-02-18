@@ -1,9 +1,10 @@
-// Fixed script.js to handle Leaflet polyline error
+// Enhanced script.js for real-time video-map sync
 document.addEventListener("DOMContentLoaded", () => {
     window.map = L.map("map").setView([36.721838, -76.242718], 14);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors"
     }).addTo(window.map);
+    window.marker = null;
 });
 
 async function uploadFiles() {
@@ -17,7 +18,7 @@ async function uploadFiles() {
 
 function processCSV(csvText) {
     let lines = csvText.split("\n");
-    let data = lines.slice(1).map(line => {
+    window.trackData = lines.slice(1).map(line => {
         let [timestamp, latitude, longitude, fix, hdop, cog, sog] = line.split(",");
         return { 
             timestamp: parseInt(timestamp), 
@@ -28,8 +29,8 @@ function processCSV(csvText) {
         };
     }).filter(d => !isNaN(d.timestamp));
     
-    plotTrack(data);
-    setupTimestampSlider(data);
+    plotTrack(window.trackData);
+    setupTimestampSlider(window.trackData);
 }
 
 function plotTrack(data) {
@@ -53,12 +54,34 @@ function setupTimestampSlider(data) {
     slider.addEventListener("input", (e) => {
         let index = parseInt(e.target.value);
         let timestamp = data[index]?.timestamp;
-        syncVideo(timestamp);
+        syncVideoAndMap(index);
     });
 }
 
-function syncVideo(timestamp) {
-    let videoName = `video_${timestamp}.mp4`;
+function syncVideoAndMap(index) {
+    let data = window.trackData[index];
+    if (!data) return;
+
+    let videoName = `video_${data.timestamp}.mp4`;
     let workerURL = "https://fancy-frog-1682.cfdmarineteam.workers.dev/get-file/";
     document.getElementById("videoPlayer").src = workerURL + videoName;
+    
+    if (window.marker) {
+        window.map.removeLayer(window.marker);
+    }
+    
+    window.marker = L.marker([data.lat, data.lon]).addTo(window.map);
+    window.map.setView([data.lat, data.lon], 14);
 }
+
+// Sync video playback with map movement
+document.getElementById("videoPlayer").addEventListener("timeupdate", function() {
+    if (!window.trackData) return;
+    let currentTime = this.currentTime * 1000; // Convert to milliseconds
+    let closestPoint = window.trackData.reduce((prev, curr) => 
+        Math.abs(curr.timestamp - currentTime) < Math.abs(prev.timestamp - currentTime) ? curr : prev
+    );
+    
+    let index = window.trackData.indexOf(closestPoint);
+    syncVideoAndMap(index);
+});
