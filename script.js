@@ -1,4 +1,4 @@
-// Fully updated script.js with Leaflet fix and real-time video-map sync
+// Fully updated script.js with Leaflet fix and real-time video-map sync (CSP Safe)
 document.addEventListener("DOMContentLoaded", () => {
     // Ensure map container exists and is properly styled
     const mapContainer = document.getElementById("map");
@@ -21,18 +21,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.marker = null;
 
-    // Force the map to resize properly after loading
-    setTimeout(() => {
+    // Use requestAnimationFrame instead of setTimeout for CSP compliance
+    requestAnimationFrame(() => {
         window.map.invalidateSize();
-    }, 1000);
+    });
 });
 
 // Ensure Leaflet map resizes when files are uploaded
 function forceMapResize() {
     if (window.map) {
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             window.map.invalidateSize();
-        }, 500);
+        });
     }
 }
 
