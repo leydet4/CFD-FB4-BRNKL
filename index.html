@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boat Trip Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <h1>Boat Trip Tracker</h1>
+    <input type="file" id="csvUpload" accept=".csv">
+    <input type="file" id="videoUpload" accept="video/mp4">
+    <button onclick="uploadFiles()">Upload</button>
+    <div id="map" style="height: 500px;"></div>
+    <video id="videoPlayer" controls style="width: 100%;"></video>
+    <input type="range" id="timestampSlider" min="0" max="100" step="1">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</body>
+</html>
