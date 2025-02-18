@@ -27,6 +27,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
 });
 
+// Ensure Leaflet map resizes when files are uploaded
+function forceMapResize() {
+    if (window.map) {
+        setTimeout(() => {
+            window.map.invalidateSize();
+        }, 500);
+    }
+}
+
 async function uploadFiles() {
     let csvFile = document.getElementById("csvUpload").files[0];
     let videoFile = document.getElementById("videoUpload").files[0];
@@ -34,6 +43,9 @@ async function uploadFiles() {
 
     let csvText = await csvFile.text();
     processCSV(csvText);
+
+    // Force map to update size after file uploads
+    forceMapResize();
 }
 
 function processCSV(csvText) {
