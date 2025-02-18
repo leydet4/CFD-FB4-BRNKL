@@ -1,10 +1,15 @@
-// Enhanced script.js for real-time video-map sync
+// Enhanced script.js with Leaflet fix and real-time video-map sync
 document.addEventListener("DOMContentLoaded", () => {
     window.map = L.map("map").setView([36.721838, -76.242718], 14);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors"
     }).addTo(window.map);
     window.marker = null;
+
+    // Fix Leaflet rendering issues
+    setTimeout(() => {
+        window.map.invalidateSize();
+    }, 500);
 });
 
 async function uploadFiles() {
@@ -53,7 +58,6 @@ function setupTimestampSlider(data) {
     slider.max = data.length - 1;
     slider.addEventListener("input", (e) => {
         let index = parseInt(e.target.value);
-        let timestamp = data[index]?.timestamp;
         syncVideoAndMap(index);
     });
 }
