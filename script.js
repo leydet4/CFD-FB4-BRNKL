@@ -27,11 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
             zoomControl: true,
         });
 
-        // Use Stamen Terrain tile provider for more stable rendering
-        L.tileLayer("https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg", {
-            attribution: "&copy; <a href='https://stamen.com'>Stamen Design</a> | Data &copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>",
-            maxZoom: 18
-        }).addTo(window.map);
+  // Use a reliable OpenStreetMap tile provider
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+    maxZoom: 18
+}).addTo(window.map);
 
         // 🔄 Force the map to redraw after a slight delay
         setTimeout(() => {
