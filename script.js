@@ -1,38 +1,46 @@
-// Fully updated script.js with Leaflet fix and real-time video-map sync (CSP Safe)
+// Fully updated script.js with Leaflet fix and real-time video-map sync (CSP Safe & Tile Fix)
 document.addEventListener("DOMContentLoaded", () => {
-    // Ensure map container exists and is properly styled
     const mapContainer = document.getElementById("map");
     if (!mapContainer) {
         console.error("Map container not found.");
         return;
     }
 
-    // Initialize the Leaflet map
     window.map = L.map("map", {
         center: [36.721838, -76.242718],
         zoom: 14,
         zoomControl: true,
     });
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors",
         maxZoom: 19
     }).addTo(window.map);
 
     window.marker = null;
 
-    // Use requestAnimationFrame instead of setTimeout for CSP compliance
-    requestAnimationFrame(() => {
+    // 🔄 Force Leaflet to redraw after a short delay
+    setTimeout(() => {
         window.map.invalidateSize();
-    });
+        window.map.eachLayer(layer => {
+            if (layer instanceof L.TileLayer) {
+                layer.redraw();
+            }
+        });
+    }, 500);
 });
 
 // Ensure Leaflet map resizes when files are uploaded
 function forceMapResize() {
     if (window.map) {
-        requestAnimationFrame(() => {
+        setTimeout(() => {
             window.map.invalidateSize();
-        });
+            window.map.eachLayer(layer => {
+                if (layer instanceof L.TileLayer) {
+                    layer.redraw();
+                }
+            });
+        }, 500);
     }
 }
 
