@@ -1,4 +1,4 @@
-// Fully updated script.js with Leaflet fix and real-time video-map sync (CSP Safe & Tile Fix)
+// Fully updated script.js with Leaflet fix and alternative non-API tile provider
 document.addEventListener("DOMContentLoaded", () => {
     const mapContainer = document.getElementById("map");
     if (!mapContainer) {
@@ -12,14 +12,16 @@ document.addEventListener("DOMContentLoaded", () => {
         zoomControl: true,
     });
 
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors",
-        maxZoom: 19
+    // Alternative free tile provider (CartoDB Positron)
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+        attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors &copy; <a href='https://carto.com/'>CARTO</a>",
+        subdomains: "abcd",
+        maxZoom: 20
     }).addTo(window.map);
 
     window.marker = null;
 
-    // 🔄 Force Leaflet to redraw after a short delay
+    // 🔄 Force Leaflet to fully reload tiles
     setTimeout(() => {
         window.map.invalidateSize();
         window.map.eachLayer(layer => {
@@ -27,7 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 layer.redraw();
             }
         });
-    }, 500);
+    }, 1000);
+
+    window.addEventListener("resize", () => {
+        window.map.invalidateSize();
+    });
 });
 
 // Ensure Leaflet map resizes when files are uploaded
