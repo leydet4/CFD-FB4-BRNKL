@@ -1,10 +1,33 @@
-// Fully updated script.js with Leaflet fix and alternative non-API tile provider (Small Map)
+// Fully updated script.js with Leaflet fix and alternative non-API tile provider (Centered Map & Video)
 document.addEventListener("DOMContentLoaded", () => {
     const mapContainer = document.getElementById("map");
-    if (!mapContainer) {
-        console.error("Map container not found.");
+    const videoContainer = document.getElementById("videoContainer");
+    const pageContainer = document.getElementById("pageContainer");
+
+    if (!mapContainer || !videoContainer || !pageContainer) {
+        console.error("One or more containers not found.");
         return;
     }
+
+    // Center the containers
+    pageContainer.style.display = "flex";
+    pageContainer.style.flexDirection = "column";
+    pageContainer.style.alignItems = "center";
+    pageContainer.style.justifyContent = "center";
+    pageContainer.style.height = "100vh";
+
+    // Ensure map and video have the same size
+    const elementWidth = "500px";
+    const elementHeight = "350px";
+
+    mapContainer.style.width = elementWidth;
+    mapContainer.style.height = elementHeight;
+    mapContainer.style.border = "2px solid black";
+    mapContainer.style.marginBottom = "20px";
+
+    videoContainer.style.width = elementWidth;
+    videoContainer.style.height = elementHeight;
+    videoContainer.style.border = "2px solid black";
 
     window.map = L.map("map", {
         center: [36.721838, -76.242718],
@@ -34,9 +57,4 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", () => {
         window.map.invalidateSize();
     });
-
-    // Apply small map size
-    mapContainer.style.width = "400px";
-    mapContainer.style.height = "300px";
-    mapContainer.style.border = "2px solid black";
 });
