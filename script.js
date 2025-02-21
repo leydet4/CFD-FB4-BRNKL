@@ -1,4 +1,4 @@
-// Fully updated script.js with Leaflet fix, proper initialization, and centered layout
+// Fully updated script.js with Leaflet fix, proper initialization, and smaller map
 document.addEventListener("DOMContentLoaded", () => {
     const mapContainer = document.getElementById("map");
     const videoContainer = document.getElementById("videoContainer");
@@ -8,19 +8,29 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    // Set fixed dimensions to make the map smaller
+    mapContainer.style.width = "300px";
+    mapContainer.style.height = "200px";
+    mapContainer.style.border = "2px solid black";
+    mapContainer.style.margin = "10px auto";
+
+    videoContainer.style.width = "300px";
+    videoContainer.style.height = "200px";
+    videoContainer.style.border = "2px solid black";
+    videoContainer.style.margin = "10px auto";
+
     try {
-        // Initialize the Leaflet map
+        // Initialize the Leaflet map with a smaller view
         window.map = L.map("map", {
             center: [36.721838, -76.242718],
             zoom: 14,
             zoomControl: true,
         });
 
-        // Add a reliable free tile provider (CartoDB Positron)
-        L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-            attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors &copy; <a href='https://carto.com/'>CARTO</a>",
-            subdomains: "abcd",
-            maxZoom: 20
+        // Use a different tile provider to fix tiling issue
+        L.tileLayer("https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
+            attribution: "&copy; OpenStreetMap contributors, Tiles courtesy of HOT OSM",
+            maxZoom: 19
         }).addTo(window.map);
 
         // Ensure the map resizes properly
